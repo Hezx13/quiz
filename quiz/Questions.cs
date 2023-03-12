@@ -10,10 +10,11 @@ namespace quiz
     {
         public Dictionary<int, string> questions;
         Dictionary<int, List<string>> answers;
+        List<string> correctAnswers;
         public Questions() { 
             questions = new Dictionary<int, string>();
             answers = new Dictionary<int, List<string>>();
-            List<string> correctAnswers = new List<string>();
+            correctAnswers = new List<string>();
         }
 
         public void AddQuiz(string[] text)
@@ -22,21 +23,24 @@ namespace quiz
             foreach (string line in text){
                 if (line[0] == '#'){
                     questions.Add(Convert.ToInt32(line[1])-49, line.Substring(2));   
-            }   
-            else if (line[0] == '\t' && questions.Count > 0){
-                tempAnswers.Add(line.Substring(1));
-            }
-            else if (line[0] == '-'){
-                answers.Add(questions.Count -1,new List<string>(tempAnswers));
-                tempAnswers.Clear();
-            }
+                }   
+                if (line[0] == '\t' && questions.Count > 0){
+                    tempAnswers.Add(line.Substring(1));
+                }
+                if (line[0] == '-'){
+                    correctAnswers.Add(line.Substring(1));
+                    answers.Add(questions.Count -1,new List<string>(tempAnswers));
+                    tempAnswers.Clear();
+                }
         }
         
         }
 
         private void RemoveQuiz(string text) { }
 
-        private void GetCorrectAnswer(int key) { }
+        public int GetCorrectAnswer(int key) {
+            return Convert.ToInt32(correctAnswers[key]);
+        }
 
         public void GetQuestion(int key) {
 

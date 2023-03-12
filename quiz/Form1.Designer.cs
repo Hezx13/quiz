@@ -89,7 +89,6 @@
             question.Size = new Size(356, 41);
             question.TabIndex = 3;
             question.Text = "Drag file with questions";
-            question.Click += question_Click;
             // 
             // answer1
             // 
@@ -154,7 +153,6 @@
             answer2.Text = "radioButton2";
             answer2.UseVisualStyleBackColor = true;
             answer2.Visible = false;
-            answer2.CheckedChanged += radioButton4_CheckedChanged;
             // 
             // Quiz
             // 

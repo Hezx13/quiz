@@ -6,7 +6,7 @@ namespace quiz
     public partial class Quiz : Form
     {
         public int questionsCount = 0;
-        public int[] correctAnswers;
+        List<bool> correctAnswers;
         RadioButton[] radioButtons;
         Questions questions;
         public Quiz()
@@ -17,10 +17,13 @@ namespace quiz
             radioButtons[1] = answer2;
             radioButtons[2] = answer3;
             radioButtons[3] = answer4;
+            correctAnswers = new List<bool>();
+            questions = new Questions();
             question.MaximumSize = new Size(700, 100);
             this.AllowDrop = true;
             this.DragEnter += new DragEventHandler(Quiz_DragEnter);
             this.DragDrop += new DragEventHandler(Quiz_DragDrop);
+            
         }
 
         T[] InitializeArray<T>(int length) where T : new()
@@ -47,7 +50,6 @@ namespace quiz
 
         private void Quiz_DragDrop(object sender, DragEventArgs e)
         {
-            questions = new Questions();
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             string[] text = null;
             foreach (string file in files) text = System.IO.File.ReadAllLines(file);
@@ -60,7 +62,10 @@ namespace quiz
 
         private void LoadQuestion(Questions data)
         {
-            if (data.questions.Count >= questionsCount)
+            foreach (RadioButton radioButton in radioButtons){
+                radioButton.Visible = false;
+            }
+            if (data.questions.Count > questionsCount)
             {
                 question.Text = data.questions[questionsCount];
                 string[] answers = data.GetAnswers(questionsCount);
@@ -68,24 +73,30 @@ namespace quiz
                 {
                     try
                     {
-                        radioButtons[i].Text = answers[5];
+                        radioButtons[i].Text = answers[i];
                         radioButtons[i].Visible = true;
                     }
                     catch (IndexOutOfRangeException)
                     {
-                        question.Text = "Error: one of imported questions does not fit the requirements";
+                        question.Text = "Error: one or more of the imported questions does not fit the requirements";
                         question.ForeColor = Color.Red;
                     }
                 }
-                questionsCount++;
+                
 
             }
-            else { }
+            else { 
+                this.EndQuiz();
+            }
 
 
         }
-        private void LoadQuiz(Questions data)
+        private void EndQuiz()
         {
+                results res = new results();
+                this.Visible = false;
+                res.Show();
+                res.LoadStatistics(correctAnswers);
         }
 
         //
@@ -129,23 +140,40 @@ namespace quiz
 
         }
 
+        //
+        ////////////////////////////////
+        //
+        
         private void button3_Click(object sender, EventArgs e)
-        {
-
+        {   
+            if (questions.questions.Count <= questionsCount){
+                this.EndQuiz();
+            }
+            else
+            radioButtons[questions.GetCorrectAnswer(questionsCount) - 1].ForeColor = Color.Green;
         }
         private void button1_Click(object sender, EventArgs e)
         {
+            try{
+            if (questions.questions.Count <= questionsCount){
+                this.EndQuiz();
+            }
+            else{
+            int correct = questions.GetCorrectAnswer(questionsCount) - 1;
+            
+            if (radioButtons[correct].Checked)
+                correctAnswers.Add(true);
+            else correctAnswers.Add(false);
+            
+            radioButtons[correct].ForeColor = Color.White;
+            questionsCount++;
             LoadQuestion(questions);
-        }
-
-        private void question_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void radioButton4_CheckedChanged(object sender, EventArgs e)
-        {
-
+            
+            }
+            } catch (IndexOutOfRangeException){
+                question.Text = "Error: one or more of the imported questions does not fit the requirements";
+                question.ForeColor = Color.Red;
+            }
         }
     }
 }
