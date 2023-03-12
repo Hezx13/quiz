@@ -53,6 +53,7 @@
             button1.TabIndex = 0;
             button1.Text = "Answer";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             button1.MouseLeave += button1_MouseLeave;
             button1.MouseHover += button1_MouseHover;
             // 
@@ -157,8 +158,8 @@
             // 
             // Quiz
             // 
-            AutoScaleDimensions = new SizeF(11F, 28F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleDimensions = new SizeF(120F, 120F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.FromArgb(16, 40, 48);
             ClientSize = new Size(914, 682);
             Controls.Add(answer2);
@@ -170,6 +171,8 @@
             Controls.Add(button1);
             Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             Margin = new Padding(4);
+            MaximumSize = new Size(932, 729);
+            MinimumSize = new Size(932, 729);
             Name = "Quiz";
             Text = "Form1";
             ResumeLayout(false);

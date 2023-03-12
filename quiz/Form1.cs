@@ -4,7 +4,7 @@ using System.Reflection;
 namespace quiz
 {
     public partial class Quiz : Form
-    {   
+    {
         public int questionsCount = 0;
         public int[] correctAnswers;
         RadioButton[] radioButtons;
@@ -17,6 +17,7 @@ namespace quiz
             radioButtons[1] = answer2;
             radioButtons[2] = answer3;
             radioButtons[3] = answer4;
+            question.MaximumSize = new Size(700, 100);
             this.AllowDrop = true;
             this.DragEnter += new DragEventHandler(Quiz_DragEnter);
             this.DragDrop += new DragEventHandler(Quiz_DragDrop);
@@ -46,7 +47,7 @@ namespace quiz
 
         private void Quiz_DragDrop(object sender, DragEventArgs e)
         {
-            Questions questions = new Questions();
+            questions = new Questions();
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             string[] text = null;
             foreach (string file in files) text = System.IO.File.ReadAllLines(file);
@@ -56,25 +57,35 @@ namespace quiz
             }
             LoadQuestion(questions);
         }
-        
+
         private void LoadQuestion(Questions data)
         {
-            if (data.questions.Count >= questionsCount){
+            if (data.questions.Count >= questionsCount)
+            {
                 question.Text = data.questions[questionsCount];
                 string[] answers = data.GetAnswers(questionsCount);
-                for (int i = 0; i < data.GetOptionsCount(questionsCount); i++){
-                    try {
-                    radioButtons[i].Text = answers[i];
-                    radioButtons[i].Visible = true;
-                    } catch (IndexOutOfRangeException){
-
+                for (int i = 0; i < data.GetOptionsCount(questionsCount); i++)
+                {
+                    try
+                    {
+                        radioButtons[i].Text = answers[5];
+                        radioButtons[i].Visible = true;
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        question.Text = "Error: one of imported questions does not fit the requirements";
+                        question.ForeColor = Color.Red;
                     }
                 }
                 questionsCount++;
 
-            } else {}
+            }
+            else { }
 
 
+        }
+        private void LoadQuiz(Questions data)
+        {
         }
 
         //
@@ -121,6 +132,10 @@ namespace quiz
         private void button3_Click(object sender, EventArgs e)
         {
 
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            LoadQuestion(questions);
         }
 
         private void question_Click(object sender, EventArgs e)
